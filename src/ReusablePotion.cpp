@@ -95,7 +95,7 @@ void ReusablePotionUnitScript::OnDamage(Unit* attacker, Unit* victim, uint32& /*
     SetPlayerPvPState(victPlayer, true);
 }
 
-void ReusablePotionPlayerScript::OnSpellCast(Player* player, Spell* spell, bool /*skipCheck*/)
+void ReusablePotionPlayerScript::OnPlayerSpellCast(Player* player, Spell* spell, bool /*skipCheck*/)
 {
     SpellInfo const* spellInfo = spell->GetSpellInfo();
     if (usedPotion) { // if a potion was used since the onspellcast call was made send a cooldown request for the potion then disable this
