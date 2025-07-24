@@ -34,7 +34,7 @@ private:
 public:
     ReusablePotionPlayerScript() : PlayerScript("ReusablePotionPlayerScript") { }
     void OnPlayerLeaveCombat(Player* /*player*/) override;
-    void OnSpellCast(Player* /*player*/, Spell* /*spell*/, bool /*skipCheck*/) override;
+    void OnPlayerSpellCast(Player* /*player*/, Spell* /*spell*/, bool /*skipCheck*/) override;
 };
 
 class ReusablePotionUnitScript : public UnitScript
