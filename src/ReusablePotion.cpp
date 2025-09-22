@@ -1,5 +1,6 @@
 #include "ReusablePotion.h"
 #include "GameTime.h"
+#include "ObjectAccessor.h"
 
 void SetPlayerPvPState(Player* player, bool state)
 {
@@ -98,10 +99,18 @@ void ReusablePotionUnitScript::OnDamage(Unit* attacker, Unit* victim, uint32& /*
 void ReusablePotionPlayerScript::OnPlayerSpellCast(Player* player, Spell* spell, bool /*skipCheck*/)
 {
     SpellInfo const* spellInfo = spell->GetSpellInfo();
-    if (usedPotion) { // if a potion was used since the onspellcast call was made send a cooldown request for the potion then disable this
-        if (lastPlayerPotion && spellStorage) {
-            lastPlayerPotion->SendCooldownEvent(spellStorage);
-            lastPlayerPotion->SetLastPotionId(0);
+    if (usedPotion)
+    {
+        if (!lastPotionPlayerGuid.IsEmpty() && spellStorage)
+        {
+            if (Player* player = ObjectAccessor::FindPlayer(lastPotionPlayerGuid))
+            {
+                if (player->IsInWorld())
+                {
+                    player->SendCooldownEvent(spellStorage);
+                    player->SetLastPotionId(0);
+                }
+            }
         }
         usedPotion = false;
     }
@@ -157,7 +166,7 @@ void ReusablePotionPlayerScript::OnPlayerSpellCast(Player* player, Spell* spell,
     // if a potion is used let the class know and store the spellInfo and player for use when another spell is cast.
     usedPotion = true;
     spellStorage = spellInfo;
-    lastPlayerPotion = player;
+    lastPotionPlayerGuid = player->GetGUID();
     return;
 }
 
